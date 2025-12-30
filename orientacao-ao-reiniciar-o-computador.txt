@@ -1,0 +1,153 @@
+1. Iniciar o Podman (se não estiver rodando)
+systemctl --user start podman.socket
+
+
+Se quiser deixar ele inicializando sozinho sempre:
+
+systemctl --user enable podman.socket
+
+🐳🔥 2. Subir os containers do seu projeto
+
+Entre na pasta onde está seu podman-compose.yml ou docker-compose.yml:
+
+cd ~/Documentos/projetos-2025/TestBeyond/shortbeyond
+podman-compose up -d
+
+
+ou, se você estiver usando apenas podman:
+
+podman start $(podman ps -a -q)
+
+🕵️‍♂️ 3. Conferir se subiu certinho
+podman ps --format "{{.Names}}"
+
+
+Se aparecerem seus containers (shortb-db, shortb-api, shortb-web, etc.), está tudo no ar.
+
+Se quiser, posso te ajudar a criar um script “liga tudo” tipo:
+
+./start.sh
+
+
+Chama que eu monto. 🚀
+
+============================================================================================
+
+
+Perfeito. Vamos montar um script “liga tudo” para você ligar o Podman + containers com um único comando. Ele será o mordomo digital do seu projeto, abrindo as cortinas do palco e acendendo as luzes do servidor 🎭⚙️
+
+📄 Crie o arquivo start.sh
+
+No diretório do seu projeto:
+
+cd ~/Documentos/projetos-2025/TestBeyond/shortbeyond
+nano start.sh
+
+
+Cole isso dentro:
+
+#!/usr/bin/env bash
+
+echo "🚀 Iniciando ambiente ShortBeyond..."
+
+# 1. Sobe o socket do Podman (garante que está ativo)
+systemctl --user start podman.socket
+
+# 2. Sobe os containers usando podman-compose
+if [ -f podman-compose.yml ]; then
+  echo "📦 Subindo containers com podman-compose..."
+  podman-compose up -d
+else
+  echo "📦 Nenhum podman-compose encontrado, iniciando todos os containers existentes..."
+  podman start $(podman ps -a -q)
+fi
+
+echo "✨ Tudo pronto!"
+echo "🔍 Containers ativos:"
+podman ps --format "{{.Names}} - {{.Status}}"
+
+🔐 Dar permissão de execução
+chmod +x start.sh
+
+▶️ Rodar o script
+./start.sh
+
+=============================================================================================
+
+Perfeito — vamos formar a equipe de comandos que despertam e adormecem seu reino de containers. Cada script é como um pequeno feitiço de automação, pronto para ser invocado no terminal ✨🐚
+
+A partir de agora, dentro do diretório do seu projeto:
+
+~/Documentos/projetos-2025/TestBeyond/shortbeyond
+
+
+você terá quatro artefatos:
+
+start.sh → chama todos para o palco
+
+stop.sh → fecha as cortinas
+
+restart.sh → intervalo rápido e volta ao espetáculo
+
+logs.sh → abre a janela e observa o que acontece lá dentro
+
+📄 1. start.sh
+#!/usr/bin/env bash
+
+echo "🚀 Iniciando ambiente ShortBeyond..."
+
+# Garante que o Podman está acordado
+systemctl --user start podman.socket
+
+# Sobe via compose se existir
+if [ -f podman-compose.yml ]; then
+  echo "📦 Subindo containers..."
+  podman-compose up -d
+else
+  echo "📦 Subindo containers existentes..."
+  podman start $(podman ps -a -q)
+fi
+
+echo "✨ Ambiente iniciado! Containers rodando:"
+podman ps --format "{{.Names}} - {{.Status}}"
+
+📄 2. stop.sh
+#!/usr/bin/env bash
+
+echo "🛑 Encerrando containers..."
+
+if [ -f podman-compose.yml ]; then
+  podman-compose down
+else
+  podman stop $(podman ps -q)
+fi
+
+echo "✨ Todos os serviços foram desligados com elegância."
+
+📄 3. restart.sh
+#!/usr/bin/env bash
+
+echo "🔄 Reiniciando o ambiente..."
+./stop.sh
+sleep 2
+./start.sh
+echo "🚀 Reinicialização concluída!"
+
+📄 4. logs.sh
+#!/usr/bin/env bash
+
+echo "📜 Registrando o sussurro dos containers..."
+podman logs -f shortbeyond-shortb-api
+
+
+Se quiser logs de outro serviço, só ajustar o nome no final.
+
+🔐 Dar permissão a todos
+chmod +x start.sh stop.sh restart.sh logs.sh
+
+▶️ Como usar no dia a dia
+Ação	Comando
+Ligar tudo	./start.sh
+Parar tudo	./stop.sh
+Reiniciar	./restart.sh
+Ver logs da API	./logs.sh
