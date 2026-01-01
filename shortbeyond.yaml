@@ -14,6 +14,7 @@ spec:
       image: docker.io/library/postgres:15
       ports:
         - containerPort: 5432
+          hostPort: 5432          # << ESSENCIAL PARA ACESSO PELO NODE
       env:
         - name: POSTGRES_USER
           value: "dba"
@@ -31,7 +32,7 @@ spec:
           hostPort: 8080
       env:
         - name: ADMINER_DEFAULT_SERVER
-          value: "localhost"   # garante conexão automática
+          value: "localhost"
 
     - name: shortb-api
       image: docker.io/beyondtest/shortb-api:hotfix
@@ -51,3 +52,5 @@ spec:
       ports:
         - containerPort: 80
           hostPort: 8081
+
+
