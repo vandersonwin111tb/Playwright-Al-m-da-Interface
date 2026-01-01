@@ -34,7 +34,7 @@ spec:
           value: "localhost"   # garante conexão automática
 
     - name: shortb-api
-      image: docker.io/beyondtest/shortb-api:beta
+      image: docker.io/beyondtest/shortb-api:hotfix
       ports:
         - containerPort: 3333
           hostPort: 3333
